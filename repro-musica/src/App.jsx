@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 // API de spotify
 import SpotifyWebApi from "spotify-web-api-js";
 // Estilos(Componentes)
+import "./App.css";
 import { useTheme, ThemeProvider, createTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
@@ -220,7 +221,8 @@ function App() {
                         alignItems="center"
                       >
                         <VolumeDown />
-                        <input
+                        <input 
+                          className="input-volumen"
                           type="range"
                           min="0"
                           max="1"
@@ -234,7 +236,7 @@ function App() {
 
                     <CardMedia
                       component="img"
-                      sx={{ width: 220 }}
+                      sx={{ width: 240 }}
                       image={nowPlaying.albumArt}
                       alt="Live from space album cover"
                     />
