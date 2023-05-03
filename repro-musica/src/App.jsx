@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 // API de spotify
 import SpotifyWebApi from "spotify-web-api-js";
-// Estilos
+// Estilos(Componentes)
 import { useTheme, ThemeProvider, createTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
@@ -142,46 +142,6 @@ function App() {
         )}
         {loggedIn && (
           <>
-            {/* <div>
-              <h1>now playing: {nowPlaying.name}</h1>
-              <h2>DE : {nowPlaying.nameArtists}</h2>
-              <p>
-                Time: {millisToMinutesAndSeconds(currentTime)} /{" "}
-                {millisToMinutesAndSeconds(duration)}
-              </p>
-            </div>
-
-            <div>
-              <img src={nowPlaying.albumArt} />
-            </div>
-
-            <button onClick={() => togglePlay()}>
-              {isPlaying ? "Pause" : "Play"}
-            </button>
-            <button
-              onClick={() => {
-                spotifyApi.skipToNext(), getNowPlaying();
-              }}
-            >
-              Siguiente canción
-            </button>
-            <button
-              onClick={() => {
-                spotifyApi.skipToPrevious(), getNowPlaying();
-              }}
-            >
-              Canción anterior
-            </button>
-            <button onClick={() => getNowPlaying()}>Check now playing</button>
-            <input
-              type="range"
-              min="0"
-              max="1"
-              step="0.01"
-              value={volume}
-              onChange={handleVolumeChange}
-            /> */}
-
             <Box
               sx={{
                 display: "flex",
