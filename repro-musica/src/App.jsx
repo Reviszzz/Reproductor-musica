@@ -76,7 +76,6 @@ function App() {
   //Funcion que permite ver el contendio de cada canción
   const getNowPlaying = () => {
     spotifyApi.getMyCurrentPlaybackState().then((response) => {
-      console.log(response);
       setNowPlaying({
         name: response.item.name,
         albumArt: response.item.album.images[0].url,
