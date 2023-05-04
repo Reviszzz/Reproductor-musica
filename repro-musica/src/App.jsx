@@ -191,7 +191,7 @@ function App() {
                           ) : (
                             <SkipPreviousIcon
                               onClick={() => {
-                                spotifyApi.skipToPrevious(), getNowPlaying();
+                                spotifyApi.skipToPrevious()
                               }}
                             />
                           )}
@@ -208,7 +208,7 @@ function App() {
                           ) : (
                             <SkipNextIcon
                               onClick={() => {
-                                spotifyApi.skipToNext(), getNowPlaying();
+                                spotifyApi.skipToNext() 
                               }}
                             />
                           )}
