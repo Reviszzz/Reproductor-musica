@@ -50,6 +50,8 @@
   .home-left-child button:hover{
     transform: translateY(-3px);
     box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+    background-color: #0f834d
+   
   }
   
   .home-right-child {

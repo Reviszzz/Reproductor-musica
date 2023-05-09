@@ -1,26 +1,27 @@
 <!doctype html>
 <html>
   <head>
-    <title>Example of the Authorization Code flow with Spotify</title>
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
-    <style type="text/css">
-      #login, #loggedin {
-        display: none;
-      }
-      .text-overflow {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        width: 500px;
-      }
-    </style>
-  </head>
+    <meta charset="utf-8">
+    <link rel="icon" type="image/svg+xml" href="assets/img/spotify.svg" />
+    <!-- <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"> -->
+    <link rel="stylesheet" href="assets/index.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/v4-shims.css">
+    <title> Iniciar con Spotify</title>
+</head>
+
 
   <body>
     <div class="container">
-      <div id="login">
-        <h1>This is an example of the Authorization Code flow</h1>
-        <a href="/login" class="btn btn-primary">Log in with Spotify</a>
+      <div class="login-container"  id="login">
+        <h1><i class="fab fa-spotify"></i>
+          <span>Spotify</span>
+      </h1>
+        <h2>Deja que su música te hable</h1>
+        <a href="/login" class="btn btn-primary">Inicia sesión con Spotify</a>
+      </div>
+      <div class="img-container">
+        <img class="portada" src="assets/img/portada-s.jpg">
       </div>
       <div id="loggedin">
         <div id="user-profile">

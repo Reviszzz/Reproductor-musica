@@ -148,7 +148,7 @@ function App() {
               <h3>Bienvenido de nuevo</h3>
               <h6>Identificate para encontrar tu música favorita</h6>
               <button onClick={() => window.location.href="http://localhost:8888"}>
-                Iniciar sesión
+                Siguiente
               </button>
             
             </div>
