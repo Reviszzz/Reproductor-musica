@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import SpotifyWebApi from "spotify-web-api-js";
 // Estilos(Componentes)
 import "./App.css";
+import hImage from "./assets/img/img-home.avif";
 import { useTheme, ThemeProvider, createTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
@@ -138,7 +139,21 @@ function App() {
     <>
       <div>
         {!loggedIn && (
-          /*para ingresar a la Api*/ <a href=" http://localhost:8888">hola</a>
+          /*para ingresar a la Api*/ 
+          <div className="home-container">
+            <div className="home-left-child">
+            <h1><i class="fab fa-spotify"></i>
+                <span>Spotify</span>
+            </h1>
+              <h3>Bienvenido de nuevo</h3>
+              <h6>Identificate para encontrar tu música favorita</h6>
+              <button onClick={() => window.location.href="http://localhost:8888"}>
+                Iniciar sesión
+              </button>
+            
+            </div>
+            <div className="home-right-child" style={{backgroundImage: `url(${hImage})`}}/>
+          </div>
         )}
         {loggedIn && (
           <>
