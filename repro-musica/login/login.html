@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Spotify Login </title>
+  <link rel="stylesheet" href="login.css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/v4-shims.css">
+</head>
+<body>
+  <header>
+    <h1><i class="fab fa-spotify"></i>
+        <span>Spotify</span>
+    </h1>
+    <div class="social-icons">
+      <a href="#" class="social-icon" id="facebook">
+        <i class="fab fa-facebook-f"></i>
+        <span>Continuar con Facebook</span> 
+      </a>
+      <a href="#" class="social-icon" id="apple">
+        <i class="fab fa-apple"></i>
+        <span>Continuar con Apple</span> 
+      </a>
+      <a href="#" class="social-icon" id="google">
+        <i class="fab fa-google"></i>
+            <span>Continuar con Google</span> 
+      </a>
+    </div>
+  </header>
+  <main>
+    <form>
+      <h2>Iniciar sesión</h2>
+      <div class="input-group">
+        <label for="email">Correo electrónico o nombre de usuario</label>
+        <input type="text" id="email" name="email" required>
+      </div>
+      <div class="input-group">
+        <label for="password">Contraseña</label>
+        <input type="password" id="password" name="password" required>
+        <a href="#" class="forgot-password">¿Olvidaste tu contraseña?</a>
+      </div>
+      <button type="submit" id="login-button">Iniciar sesión</button>
+    </form>
+    <div class="signup">
+      <h3>¿No tienes cuenta?</h3>
+      <a href="#" class="signup-btn">Regístrate en Spotify</a>
+    </div>
+  </main>
+  <script src="login.js"></script>
+</body>
+</html>
