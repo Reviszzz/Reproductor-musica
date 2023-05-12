@@ -18,6 +18,9 @@ import Stack from "@mui/material/Stack";
 import Slider from "@mui/material/Slider";
 import VolumeDown from "@mui/icons-material/VolumeDown";
 import VolumeUp from "@mui/icons-material/VolumeUp";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import { CardActionArea } from "@mui/material";
 
 // Fondo Oscuro
 const darkTheme = createTheme({
@@ -49,6 +52,8 @@ function App() {
   const [playlist, setPlaylist] = useState([]);
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(0.5);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResult, setSearchResult] = useState(null);
 
   const theme = useTheme();
 
@@ -60,7 +65,6 @@ function App() {
       setSpotifyToken(spotifyToken);
       spotifyApi.setAccessToken(spotifyToken);
       spotifyApi.getMe().then((user) => {
-        console.log(user);
         spotifyApi.getUserPlaylists(user.id).then((playlists) => {
           setPlaylist(playlists.items);
         });
@@ -78,7 +82,7 @@ function App() {
   const getNowPlaying = () => {
     spotifyApi.getMyCurrentPlaybackState().then((response) => {
       setNowPlaying({
-        name: response.item.name,
+        nameTrack: response.item.name,
         albumArt: response.item.album.images[0].url,
         nameArtists: response.item.artists[0].name,
         duration: response.item.duration_ms,
@@ -88,13 +92,54 @@ function App() {
     });
   };
 
+  const handleSearchInputChange = (event) => {
+    setSearchQuery(event.target.value);
+  };
+
+  const handleSearchSubmit = async (response) => {
+    response.preventDefault();
+    if (!searchQuery) return;
+
+    try {
+      const response = await spotifyApi.search(searchQuery, [
+        "album",
+        "artist",
+        "track",
+      ]);
+      console.log(response);
+      if (
+        !response ||
+        !response.artists ||
+        response.artists.items.length === 0 
+      ) {
+        setSearchResult(null);
+      } else {
+        const artist = response.artists.items[0];
+        const image = artist.images[0].url;
+        const name = artist.name;
+       const songs = artist.top_tracks
+          ? artist.top_tracks.map((track) => track.name)
+          : [];
+        setSearchResult({
+          image,
+          name,
+          songs,
+        });
+        console.log(songs)
+      }
+    } catch (error) {
+      console.error(error);
+      setSearchResult(null);
+    }
+  };
+
   //Un effect que permite renovar el contendio de los metodos
   useEffect(() => {
     if (loggedIn) {
       spotifyApi.getMyCurrentPlaybackState().then((response) => {
         if (response && response.item) {
           setNowPlaying({
-            name: response.item.name,
+            nameTrack: response.item.name,
             albumArt: response.item.album.images[0].url,
             nameArtists: response.item.artists[0].name,
             duration: response.item.duration_ms,
@@ -139,20 +184,25 @@ function App() {
     <>
       <div>
         {!loggedIn && (
-          /*para ingresar a la Api*/ 
+          /*para ingresar a la Api*/
           <div className="home-container">
             <div className="home-left-child">
-            <h1><i class="fab fa-spotify"></i>
+              <h1>
+                <i class="fab fa-spotify"></i>
                 <span>Spotify</span>
-            </h1>
+              </h1>
               <h3>Bienvenido de nuevo</h3>
               <h6>Identificate para encontrar tu música favorita</h6>
-              <button onClick={() => window.location.href="http://localhost:8888"}>
+              <button
+                onClick={() => (window.location.href = "http://localhost:8888")}
+              >
                 Siguiente
               </button>
-            
             </div>
-            <div className="home-right-child" style={{backgroundImage: `url(${hImage})`}}/>
+            <div
+              className="home-right-child"
+              style={{ backgroundImage: `url(${hImage})` }}
+            />
           </div>
         )}
         {loggedIn && (
@@ -160,11 +210,51 @@ function App() {
             <Box
               sx={{
                 display: "flex",
+                flexDirection: "column",
                 justifyContent: "center",
                 alignItems: "center",
                 height: "100vh",
               }}
             >
+              <Box sx={{ padding: 5, justifyContent: "center" }}>
+                <TextField
+                  label="Buscar canción, artista o álbum"
+                  variant="outlined"
+                  value={searchQuery}
+                  onChange={handleSearchInputChange}
+                  sx={{ width: 400, mr: 2 }}
+                />
+                <Button
+                  sx={{ alignItems: "center" }}
+                  variant="contained"
+                  onClick={handleSearchSubmit}
+                >
+                  Buscar
+                </Button>
+              </Box>
+              {searchResult && (
+              <Card sx={{ maxWidth: 345, margin: "auto" }}>
+                <CardActionArea>
+                  <CardMedia
+                    component="img"
+                    height="140"
+                    image={searchResult.image}
+                    alt={searchResult.name}
+                  />
+                  <CardContent>
+                    <Typography gutterBottom variant="h5" component="div">
+                      {searchResult.name}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {searchResult.songs.map((song) => (
+                        <li key={song}>{song}</li>
+                      ))}
+                    </Typography>
+                  </CardContent>
+                </CardActionArea>
+              </Card>
+            )}
+
               <Card sx={{ display: "flex", alignItems: "center" }}>
                 <ThemeProvider theme={darkTheme}>
                   <Card sx={{ display: "flex", justifyContent: "center" }}>
@@ -177,7 +267,7 @@ function App() {
                     >
                       <CardContent sx={{ flex: "1 0 auto" }}>
                         <Typography component="div" variant="h5">
-                          {nowPlaying.name}
+                          {nowPlaying.nameTrack}
                         </Typography>
                         <Typography variant="subtitle1" component="div">
                           {nowPlaying.nameArtists}
@@ -235,7 +325,7 @@ function App() {
                         alignItems="center"
                       >
                         <VolumeDown />
-                        <input 
+                        <input
                           className="input-volumen"
                           type="range"
                           min="0"
