@@ -20,6 +20,7 @@ import VolumeDown from "@mui/icons-material/VolumeDown";
 import VolumeUp from "@mui/icons-material/VolumeUp";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
+import Grid from "@mui/material/Grid";
 import { CardActionArea } from "@mui/material";
 
 // Fondo Oscuro
@@ -110,22 +111,21 @@ function App() {
       if (
         !response ||
         !response.artists ||
-        response.artists.items.length === 0 
+        response.artists.items.length === 0
       ) {
         setSearchResult(null);
       } else {
         const artist = response.artists.items[0];
+        const tracks = response.tracks.items;
         const image = artist.images[0].url;
         const name = artist.name;
-       const songs = artist.top_tracks
-          ? artist.top_tracks.map((track) => track.name)
-          : [];
+        const songs = tracks ? tracks.map((track) => track.name) : [];
         setSearchResult({
           image,
           name,
           songs,
         });
-        console.log(songs)
+        console.log(songs);
       }
     } catch (error) {
       console.error(error);
@@ -165,9 +165,16 @@ function App() {
   const handleVolumeChange = (event) => {
     const newVolume = parseFloat(event.target.value);
     setVolume(newVolume);
-    spotifyApi.setVolume(newVolume * 100).then(() => {
-      console.log(`Volume set to ${newVolume}`);
-    });
+
+    new Promise((resolve) => {
+      spotifyApi
+        .setVolume(newVolume * 100)
+        .then(() => {
+          console.log(`Volume set to ${newVolume}`);
+          resolve();
+        })
+        .catch((error) => {});
+    }).catch((error) => {});
   };
 
   // Funcion para adelantar la cancion y devolver a la anterior
@@ -209,14 +216,15 @@ function App() {
           <>
             <Box
               sx={{
+                padding: 10,
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "center",
                 alignItems: "center",
-                height: "100vh",
+                height: "185vh",
               }}
             >
-              <Box sx={{ padding: 5, justifyContent: "center" }}>
+              <Box sx={{ marginTop: 12, padding: 5, justifyContent: "center" }}>
                 <TextField
                   label="Buscar canción, artista o álbum"
                   variant="outlined"
@@ -233,120 +241,142 @@ function App() {
                 </Button>
               </Box>
               {searchResult && (
-              <Card sx={{ maxWidth: 345, margin: "auto" }}>
-                <CardActionArea>
-                  <CardMedia
-                    component="img"
-                    height="140"
-                    image={searchResult.image}
-                    alt={searchResult.name}
-                  />
-                  <CardContent>
-                    <Typography gutterBottom variant="h5" component="div">
-                      {searchResult.name}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {searchResult.songs.map((song) => (
-                        <li key={song}>{song}</li>
-                      ))}
-                    </Typography>
-                  </CardContent>
-                </CardActionArea>
-              </Card>
-            )}
-
-              <Card sx={{ display: "flex", alignItems: "center" }}>
-                <ThemeProvider theme={darkTheme}>
-                  <Card sx={{ display: "flex", justifyContent: "center" }}>
-                    <Box
+                <>
+                  <Box sx={{ marginBottom: 5 }}>
+                    <Card
                       sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        padding: 2,
+                        width: 300,
+                        height: 370,
+                        maxWidth: 345,
+                        margin: "auto",
                       }}
                     >
-                      <CardContent sx={{ flex: "1 0 auto" }}>
-                        <Typography component="div" variant="h5">
-                          {nowPlaying.nameTrack}
-                        </Typography>
-                        <Typography variant="subtitle1" component="div">
-                          {nowPlaying.nameArtists}
-                        </Typography>
-                        <Typography
-                          color="text.secondary"
-                          variant="subtitle1"
-                          component="h2"
-                        >
-                          {millisToMinutesAndSeconds(currentTime)} /{" "}
-                          {millisToMinutesAndSeconds(duration)}
-                        </Typography>
-                      </CardContent>
+                      <CardActionArea>
+                        <CardMedia
+                          component="img"
+                          height="300"
+                          width="200"
+                          image={searchResult.image}
+                          alt={searchResult.name}
+                        />
+                        <CardContent>
+                          <Typography gutterBottom variant="h5" component="div">
+                            {searchResult.name}
+                          </Typography>
+                        </CardContent>
+                      </CardActionArea>
+                    </Card>
+                  </Box>
+                  <Box>
+                    <Grid container spacing={2}>
+                      {searchResult.songs.map((song, index) => (
+                        <Grid item xs={3} sm={4} md={3} key={song + index}>
+                          <Card sx={{ maxWidth: 300, padding: 2 }}>
+                            <CardActionArea>
+                              <CardContent>{song}</CardContent>
+                            </CardActionArea>
+                          </Card>
+                        </Grid>
+                      ))}
+                    </Grid>
+                  </Box>
+                </>
+              )}
+
+              <Box sx={{ marginTop: 4, marginBottom: 20 }}>
+                <Card sx={{ display: "flex", alignItems: "center" }}>
+                  <ThemeProvider theme={darkTheme}>
+                    <Card sx={{ display: "flex", justifyContent: "center" }}>
                       <Box
                         sx={{
                           display: "flex",
-                          alignItems: "center",
-                          pl: 1,
-                          pb: 1,
+                          flexDirection: "column",
+                          padding: 2,
                         }}
                       >
-                        <IconButton aria-label="previous">
-                          {theme.direction === "rtl" ? (
-                            <SkipNextIcon />
-                          ) : (
-                            <SkipPreviousIcon
-                              onClick={() => {
-                                spotifyApi.skipToPrevious(), getNowPlaying();
-                              }}
+                        <CardContent sx={{ flex: "1 0 auto" }}>
+                          <Typography component="div" variant="h5">
+                            {nowPlaying.nameTrack}
+                          </Typography>
+                          <Typography variant="subtitle1" component="div">
+                            {nowPlaying.nameArtists}
+                          </Typography>
+                          <Typography
+                            color="text.secondary"
+                            variant="subtitle1"
+                            component="h2"
+                          >
+                            {millisToMinutesAndSeconds(currentTime)} /{" "}
+                            {millisToMinutesAndSeconds(duration)}
+                          </Typography>
+                        </CardContent>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            pl: 1,
+                            pb: 1,
+                          }}
+                        >
+                          <IconButton aria-label="previous">
+                            {theme.direction === "rtl" ? (
+                              <SkipNextIcon />
+                            ) : (
+                              <SkipPreviousIcon
+                                onClick={() => {
+                                  spotifyApi.skipToPrevious(), getNowPlaying();
+                                }}
+                              />
+                            )}
+                          </IconButton>
+                          <IconButton aria-label="play/pause">
+                            <PlayArrowIcon
+                              sx={{ height: 38, width: 38 }}
+                              onClick={() => togglePlay()}
                             />
-                          )}
-                        </IconButton>
-                        <IconButton aria-label="play/pause">
-                          <PlayArrowIcon
-                            sx={{ height: 38, width: 38 }}
-                            onClick={() => togglePlay()}
+                          </IconButton>
+                          <IconButton aria-label="next">
+                            {theme.direction === "rtl" ? (
+                              <SkipPreviousIcon />
+                            ) : (
+                              <SkipNextIcon
+                                onClick={() => {
+                                  spotifyApi.skipToNext(), getNowPlaying();
+                                }}
+                              />
+                            )}
+                          </IconButton>
+                        </Box>
+                        <Stack
+                          spacing={2}
+                          direction="row"
+                          sx={{ mb: 1 }}
+                          alignItems="center"
+                        >
+                          <VolumeDown />
+                          <input
+                            className="input-volumen"
+                            type="range"
+                            min="0"
+                            max="1"
+                            step="0.01"
+                            value={volume}
+                            onChange={handleVolumeChange}
                           />
-                        </IconButton>
-                        <IconButton aria-label="next">
-                          {theme.direction === "rtl" ? (
-                            <SkipPreviousIcon />
-                          ) : (
-                            <SkipNextIcon
-                              onClick={() => {
-                                spotifyApi.skipToNext(), getNowPlaying();
-                              }}
-                            />
-                          )}
-                        </IconButton>
+                          <VolumeUp />
+                        </Stack>
                       </Box>
-                      <Stack
-                        spacing={2}
-                        direction="row"
-                        sx={{ mb: 1 }}
-                        alignItems="center"
-                      >
-                        <VolumeDown />
-                        <input
-                          className="input-volumen"
-                          type="range"
-                          min="0"
-                          max="1"
-                          step="0.01"
-                          value={volume}
-                          onChange={handleVolumeChange}
-                        />
-                        <VolumeUp />
-                      </Stack>
-                    </Box>
 
-                    <CardMedia
-                      component="img"
-                      sx={{ width: 240 }}
-                      image={nowPlaying.albumArt}
-                      alt="Live from space album cover"
-                    />
-                  </Card>
-                </ThemeProvider>
-              </Card>
+                      <CardMedia
+                        component="img"
+                        sx={{ width: 240 }}
+                        image={nowPlaying.albumArt}
+                        alt="Live from space album cover"
+                      />
+                    </Card>
+                  </ThemeProvider>
+                </Card>
+              </Box>
             </Box>
           </>
         )}
