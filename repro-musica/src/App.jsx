@@ -15,18 +15,43 @@ import SkipPreviousIcon from "@mui/icons-material/SkipPrevious";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import SkipNextIcon from "@mui/icons-material/SkipNext";
 import Stack from "@mui/material/Stack";
-import Slider from "@mui/material/Slider";
 import VolumeDown from "@mui/icons-material/VolumeDown";
 import VolumeUp from "@mui/icons-material/VolumeUp";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import { CardActionArea } from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
+import { styled } from '@mui/system';
 
 // Fondo Oscuro
 const darkTheme = createTheme({
   palette: {
     mode: "dark",
+  },
+});
+
+//Color theme
+const BorderColor = createTheme({
+  palette: {
+    primary: {
+      main: "#4caf50",
+    },
+  },
+});
+
+const SearchColor = createTheme({
+  palette: {
+    primary: {
+      main: "#1ed75f",
+    },
+  },
+});
+
+// TextField theme
+const RoundedTextField = styled(TextField)({
+  '& .MuiOutlinedInput-root': {
+    borderRadius: '30px', // Ajusta el valor de borderRadius según la cantidad de redondez deseada
   },
 });
 
@@ -219,26 +244,41 @@ function App() {
                 padding: 10,
                 display: "flex",
                 flexDirection: "column",
-                justifyContent: "center",
                 alignItems: "center",
                 height: "185vh",
               }}
             >
-              <Box sx={{ marginTop: 12, padding: 5, justifyContent: "center" }}>
-                <TextField
-                  label="Buscar canción, artista o álbum"
-                  variant="outlined"
-                  value={searchQuery}
-                  onChange={handleSearchInputChange}
-                  sx={{ width: 400, mr: 2 }}
-                />
-                <Button
-                  sx={{ alignItems: "center" }}
-                  variant="contained"
-                  onClick={handleSearchSubmit}
-                >
-                  Buscar
-                </Button>
+              <Box
+                sx={{
+                  display: "flex",
+                  padding: 5,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <ThemeProvider theme={BorderColor}>
+                  <RoundedTextField
+                    label="Buscar canción, artista o álbum"
+                    variant="outlined"
+                    value={searchQuery}
+                    onChange={handleSearchInputChange}
+                    sx={{width: 400, mr: 2}}
+                  />
+                </ThemeProvider>
+                <ThemeProvider theme={SearchColor}>
+                  <Button
+                    sx={{
+                      alignItems: "center",
+                      borderRadius: "50%",
+                      height: 60,
+                      width: 25,
+                    }}
+                    variant="contained"
+                    onClick={handleSearchSubmit}
+                  >
+                    <SearchIcon />
+                  </Button>
+                </ThemeProvider>
               </Box>
               {searchResult && (
                 <>
@@ -284,7 +324,7 @@ function App() {
               )}
 
               <Box sx={{ marginTop: 4, marginBottom: 20 }}>
-                <Card sx={{ display: "flex", alignItems: "center" }}>
+                <Card sx={{ display: "flex", alignItems: "center",marginBottom: 5 }}>
                   <ThemeProvider theme={darkTheme}>
                     <Card sx={{ display: "flex", justifyContent: "center" }}>
                       <Box
