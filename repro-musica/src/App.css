@@ -24,3 +24,18 @@ input[type=range] {
     box-shadow: 0 0 2px rgba(0, 0, 0, 0.4);
     margin-top: -7.5px;
   }
+
+  .carousel {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch; /* Para dispositivos iOS */
+  }
+  
+  .carousel-item {
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+    margin-right: 8px; /* Espacio entre elementos del carrusel */
+  }
+  

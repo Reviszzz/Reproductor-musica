@@ -22,7 +22,7 @@ import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import { CardActionArea } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-import { styled } from '@mui/system';
+import { styled } from "@mui/system";
 
 // Fondo Oscuro
 const darkTheme = createTheme({
@@ -50,8 +50,8 @@ const SearchColor = createTheme({
 
 // TextField theme
 const RoundedTextField = styled(TextField)({
-  '& .MuiOutlinedInput-root': {
-    borderRadius: '30px', // Ajusta el valor de borderRadius según la cantidad de redondez deseada
+  "& .MuiOutlinedInput-root": {
+    borderRadius: "30px", // Ajusta el valor de borderRadius según la cantidad de redondez deseada
   },
 });
 
@@ -142,6 +142,8 @@ function App() {
       } else {
         const artist = response.artists.items[0];
         const tracks = response.tracks.items;
+        const tracksImages = response.tracks.items[0].album.images[0].url;
+        console.log(tracksImages);
         const image = artist.images[0].url;
         const name = artist.name;
         const songs = tracks ? tracks.map((track) => track.name) : [];
@@ -149,8 +151,8 @@ function App() {
           image,
           name,
           songs,
+          tracksImages,
         });
-        console.log(songs);
       }
     } catch (error) {
       console.error(error);
@@ -158,6 +160,17 @@ function App() {
     }
   };
 
+// Un effect que permite poner el valor en null si no hay texto en el input
+  useEffect(() => {
+    if (searchQuery.length === 0) {
+      const timer = setTimeout(() => {
+        setSearchResult(null);
+      }, 1000);
+  
+      return () => clearTimeout(timer);
+    }
+  }, [searchQuery]);
+  
   //Un effect que permite renovar el contendio de los metodos
   useEffect(() => {
     if (loggedIn) {
@@ -262,7 +275,7 @@ function App() {
                     variant="outlined"
                     value={searchQuery}
                     onChange={handleSearchInputChange}
-                    sx={{width: 400, mr: 2}}
+                    sx={{ width: 400, mr: 2 }}
                   />
                 </ThemeProvider>
                 <ThemeProvider theme={SearchColor}>
@@ -309,11 +322,17 @@ function App() {
                   </Box>
                   <Box>
                     <Grid container spacing={2}>
-                      {searchResult.songs.map((song, index) => (
+                      {searchResult?.songs.map((song, index) => (
                         <Grid item xs={3} sm={4} md={3} key={song + index}>
                           <Card sx={{ maxWidth: 300, padding: 2 }}>
                             <CardActionArea>
-                              <CardContent>{song}</CardContent>
+                              <CardContent>
+                                <CardMedia
+                                  image={searchResult?.tracksImages}
+                                  alt=""
+                                />
+                                {song}
+                              </CardContent>
                             </CardActionArea>
                           </Card>
                         </Grid>
@@ -324,7 +343,13 @@ function App() {
               )}
 
               <Box sx={{ marginTop: 4, marginBottom: 20 }}>
-                <Card sx={{ display: "flex", alignItems: "center",marginBottom: 5 }}>
+                <Card
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    marginBottom: 5,
+                  }}
+                >
                   <ThemeProvider theme={darkTheme}>
                     <Card sx={{ display: "flex", justifyContent: "center" }}>
                       <Box
@@ -409,7 +434,7 @@ function App() {
 
                       <CardMedia
                         component="img"
-                        sx={{ width: 240 }}
+                        sx={{ width: 250 }}
                         image={nowPlaying.albumArt}
                         alt="Live from space album cover"
                       />
