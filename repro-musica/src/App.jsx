@@ -23,6 +23,8 @@ import Grid from "@mui/material/Grid";
 import { CardActionArea } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { styled } from "@mui/system";
+import { Carousel } from "react-responsive-carousel";
+import "react-responsive-carousel/lib/styles/carousel.min.css";
 
 // Fondo Oscuro
 const darkTheme = createTheme({
@@ -160,17 +162,17 @@ function App() {
     }
   };
 
-// Un effect que permite poner el valor en null si no hay texto en el input
+  // Un effect que permite poner el valor en null si no hay texto en el input
   useEffect(() => {
     if (searchQuery.length === 0) {
       const timer = setTimeout(() => {
         setSearchResult(null);
       }, 1000);
-  
+
       return () => clearTimeout(timer);
     }
   }, [searchQuery]);
-  
+
   //Un effect que permite renovar el contendio de los metodos
   useEffect(() => {
     if (loggedIn) {
@@ -258,7 +260,7 @@ function App() {
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
-                height: "185vh",
+                height: "100vh",
               }}
             >
               <Box
@@ -271,7 +273,7 @@ function App() {
               >
                 <ThemeProvider theme={BorderColor}>
                   <RoundedTextField
-                    label="Buscar canción, artista o álbum"
+                    label="Buscar artista"
                     variant="outlined"
                     value={searchQuery}
                     onChange={handleSearchInputChange}
@@ -320,24 +322,53 @@ function App() {
                       </CardActionArea>
                     </Card>
                   </Box>
-                  <Box>
-                    <Grid container spacing={2}>
-                      {searchResult?.songs.map((song, index) => (
-                        <Grid item xs={3} sm={4} md={3} key={song + index}>
-                          <Card sx={{ maxWidth: 300, padding: 2 }}>
-                            <CardActionArea>
-                              <CardContent>
-                                <CardMedia
-                                  image={searchResult?.tracksImages}
-                                  alt=""
-                                />
-                                {song}
-                              </CardContent>
-                            </CardActionArea>
-                          </Card>
-                        </Grid>
-                      ))}
-                    </Grid>
+                  <Box sx={{ maxWidth: 350,}}>
+                    <Carousel
+                      showThumbs={false}
+                      showStatus={false}
+                      infiniteLoop={true}
+                      centerMode={false}
+                      dynamicHeight={true}
+                      emulateTouch={true}
+                      showIndicators={true}
+                      showArrows={true}
+                      swipeable={true}
+                      interval={3000}
+                    >
+                      
+                      {searchResult?.songs
+                        .reduce((groups, song, index) => {
+                          if (index % 2 === 0) {
+                            groups.push(
+                              searchResult.songs.slice(index, index + 2)
+                            );
+                          }
+                          return groups;
+                        }, [])
+                        .map((group, index) => (
+                          <div key={index} style={{ display: "flex" }}>
+                            {group.map((song, innerIndex) => (
+                              <CardActionArea
+                                sx={{
+                                  maxWidth: 300,
+                                  padding: 2,
+                                  borderRadius: 2,
+                                  marginBottom: 5,
+                                }}
+                                key={song + innerIndex}
+                              >
+                                <CardContent>
+                                  <CardMedia
+                                    image={searchResult.tracksImages}
+                                    alt=""
+                                  />
+                                  {song}
+                                </CardContent>
+                              </CardActionArea>
+                            ))}
+                          </div>
+                        ))}
+                    </Carousel>
                   </Box>
                 </>
               )}
